@@ -20,9 +20,9 @@ connection.connect((err)=> {
 
 })
 
-// get all questions:
+// get all parties:
 router.get('/', cors(), (req, res) => {
-  let sql = "select * from question";
+  let sql = "select * from party";
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     //res.header("Access-Control-Allow-Origin", "*")
@@ -31,14 +31,20 @@ router.get('/', cors(), (req, res) => {
 
 })
 
-/*router.get('/candidates', cors(), (req, res) => {
-  let sql = "select * from candidate";
-  connection.query(sql, function (error, results, fields) {
+// validate party link
+router.get('/validate', cors(), (req, res) => {
+  let partyid = parseInt(req.query.partyId)
+  let link = req.query.link
+  let sql = "select * from party where id = ? and link = ?"
+  let inserts = [partyid, link]
+  console.log(partyid, link)
+  connection.query(sql, inserts, function (error, results, fields) {
     if (error) throw error;
     res.json(results)
-  });
+    console.log(sql, inserts)
 
+  })
 })
-*/
+
 
 module.exports = router;
