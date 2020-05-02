@@ -2,10 +2,13 @@ const express = require('express')
 const mysql = require('mysql')
 const path = require('path')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
 
 
 
 const app = express()
+app.use(cookieParser())
 
 
 app.listen("7777",() => {
