@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 
 const app = express()
 app.use(cookieParser())
-
+app.use(bodyParser())
 
 app.listen("7777",() => {
   console.log("listening to port 7777")
@@ -17,3 +17,4 @@ app.listen("7777",() => {
 
 app.use('/api/questions', require('./routes/api/questions'))
 app.use('/api/parties', require('./routes/api/parties'))
+app.use('/api/authenticate', require('./routes/api/authenticate'))

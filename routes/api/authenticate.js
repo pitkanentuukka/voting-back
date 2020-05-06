@@ -6,10 +6,15 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 const {check, validationResult} = require('express-validator')
+const uuid = require('uuid')
 
 const secret = 't0ps3cr3tf0rd3v3nv'
 
 
+router.get('/auth/', verifyToken, (req, res) => {
+  console.log("returning status 200")
+  res.status(200).end()
+})
 
 router.post('/', cors(), (req, res) => {
 
@@ -27,11 +32,9 @@ router.post('/', cors(), (req, res) => {
           if (bcres) {
             const payload = { email };
             const token = jwt.sign(payload, secret, {
-              expiresIn: '1h'
+              expiresIn: '1d'
             })
-            res.cookie('token', token, { httpOnly: true })
-            .sendStatus(200)
-
+            res.status(200).json({token})
           } else {
             // password hashes didn't match
             res.status(200).json({"msg": "invalid email or password"})
@@ -43,7 +46,6 @@ router.post('/', cors(), (req, res) => {
     res.status(400).json({"msg": "missing email or password"})
   }
 })
-
 router.post('/adduser/', cors(), (req, res) => {
   const {email, password} = req.body
   console.log(req.body.email)
@@ -58,19 +60,44 @@ router.post('/adduser/', cors(), (req, res) => {
   })
 })
 
-/*
-// validate party link
-router.get('/validate', cors(), (req, res) => {
-  let partyid = parseInt(req.query.partyId)
-  let link = req.query.link
-  let sql = "select * from party where id = ? and link = ?"
-  let inserts = [partyid, link]
-  connection.query(sql, inserts, function (error, results, fields) {
-    if (error) throw error;
-    res.json(results)
 
+router.post('/addparty', verifyToken, (req, res) => {
+  const partyName = req.body.partyName
+  const link = uuid.v4()
+  //console.log(link)
+  let sql = "insert into party (name, link) values (?, ?)"
+  let inserts = [partyName, link]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) console.log(error)
+    res.status(200).json(inserts)
   })
-})
-*/
 
-module.exports = router;
+})
+
+function verifyToken(req, res, next) {
+  // Get auth header value
+  const bearerHeader = req.header('authorization')
+
+  if(typeof bearerHeader !== 'undefined') {
+    // Split at the space
+    const bearer = bearerHeader.split(' ')
+
+    // Get token from array
+    const bearerToken = bearer[1]
+
+    req.token = bearerToken
+
+    jwt.verify(req.token, secret, (err, authData) => {
+      if(err) {
+        res.sendStatus(403)
+      } else {
+
+        next()
+      }
+    })
+  } else {
+    res.sendStatus(403)
+  }
+}
+
+module.exports = router

@@ -9,7 +9,7 @@ const connection = require ('./sql.js')
 router.get('/', cors(), (req, res) => {
   let sql = "select * from question";
   connection.query(sql, function (error, results, fields) {
-    if (error) throw error;
+    if (error) console.log(error)
     //res.header("Access-Control-Allow-Origin", "*")
     res.json(results)
   });
