@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 const {check, validationResult} = require('express-validator')
 const uuid = require('uuid')
+const cookieParser = require('cookie-parser')
 
 const secret = 't0ps3cr3tf0rd3v3nv'
 
@@ -26,7 +27,7 @@ router.post('/', cors(), (req, res) => {
     connection.query(sql, inserts, (error, results, fields) => {
       if (results.length === 0) {
         // email wasn't found in the db
-        res.status(200).json({"msg": "invalid email or password"})
+        res.status(403).json({"msg": "invalid email or password"})
       } else {
         bcrypt.compare(password, results[0].password, (bcerr, bcres) => {
           if (bcres) {
@@ -34,10 +35,11 @@ router.post('/', cors(), (req, res) => {
             const token = jwt.sign(payload, secret, {
               expiresIn: '1d'
             })
-            res.status(200).json({token})
+            res.status(200).cookie('token', token, { httpOnly: true })
+            res.end()
           } else {
             // password hashes didn't match
-            res.status(200).json({"msg": "invalid email or password"})
+            res.status(403).json({"msg": "invalid email or password"})
           }
         })
       }
@@ -75,19 +77,11 @@ router.post('/addparty', verifyToken, (req, res) => {
 })
 
 function verifyToken(req, res, next) {
-  // Get auth header value
-  const bearerHeader = req.header('authorization')
 
-  if(typeof bearerHeader !== 'undefined') {
-    // Split at the space
-    const bearer = bearerHeader.split(' ')
+  if(typeof req.cookies.token !== 'undefined') {
 
-    // Get token from array
-    const bearerToken = bearer[1]
-
-    req.token = bearerToken
-
-    jwt.verify(req.token, secret, (err, authData) => {
+    jwt.verify(req.cookies.token, secret, (err, authData) => {
+      console.log("err")
       if(err) {
         res.sendStatus(403)
       } else {
