@@ -10,10 +10,9 @@ const uuid = require('uuid')
 const cookieParser = require('cookie-parser')
 
 const secret = 't0ps3cr3tf0rd3v3nv'
-
+const verifyToken = require('./../../verifyToken')
 
 router.get('/auth/', verifyToken, (req, res) => {
-  console.log("returning status 200")
   res.status(200).end()
 })
 
@@ -48,9 +47,8 @@ router.post('/', cors(), (req, res) => {
     res.status(400).json({"msg": "missing email or password"})
   }
 })
-router.post('/adduser/', cors(), (req, res) => {
+router.post('/adduser/', verifyToken, (req, res) => {
   const {email, password} = req.body
-  console.log(req.body.email)
   bcrypt.hash(password, 10, (err, hash) => {
     let sql = "insert into users (email, password, status) values (?, ?, 1)"
     let inserts = [email, hash]
@@ -66,7 +64,6 @@ router.post('/adduser/', cors(), (req, res) => {
 router.post('/addparty', verifyToken, (req, res) => {
   const partyName = req.body.partyName
   const link = uuid.v4()
-  //console.log(link)
   let sql = "insert into party (name, link) values (?, ?)"
   let inserts = [partyName, link]
   connection.query(sql, inserts, (error, results, fields) => {
@@ -75,9 +72,8 @@ router.post('/addparty', verifyToken, (req, res) => {
   })
 
 })
-
+/*
 function verifyToken(req, res, next) {
-
   if(typeof req.cookies.token !== 'undefined') {
 
     jwt.verify(req.cookies.token, secret, (err, authData) => {
@@ -85,7 +81,6 @@ function verifyToken(req, res, next) {
       if(err) {
         res.sendStatus(403)
       } else {
-
         next()
       }
     })
@@ -93,5 +88,7 @@ function verifyToken(req, res, next) {
     res.sendStatus(403)
   }
 }
+*/
+
 
 module.exports = router
