@@ -18,3 +18,4 @@ app.listen("7777",() => {
 app.use('/api/questions', require('./routes/api/questions'))
 app.use('/api/parties', require('./routes/api/parties'))
 app.use('/api/authenticate', require('./routes/api/authenticate'))
+app.use('/api/admin', require('./routes/api/admin'))

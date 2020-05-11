@@ -17,7 +17,7 @@ const verifyToken = require('./../../verifyToken')
 * and read operations can also exist elsewhere
  **/
 
-router.post('/addparty', verifyToken, (req, res) => {
+router.post('/addparty/', verifyToken, (req, res) => {
   const partyName = req.body.partyName
   const link = uuid.v4()
   let sql = "insert into party (name, link) values (?, ?)"
@@ -32,7 +32,7 @@ router.post('/addparty', verifyToken, (req, res) => {
 
 })
 
-router.post('/adddistrict', verifyToken, (req, res) => {
+router.post('/adddistrict/', verifyToken, (req, res) => {
   const district = req.body.district
 
   let sql = "insert into district (district) values (?)"
@@ -46,7 +46,7 @@ router.post('/adddistrict', verifyToken, (req, res) => {
   })
 
 })
-router.post('/adddquestion', verifyToken, (req, res) => {
+router.post('/addquestion/', verifyToken, (req, res) => {
   const question = req.body.question
 
   let sql = "insert into question (question) values (?)"

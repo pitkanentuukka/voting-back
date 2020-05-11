@@ -66,17 +66,7 @@ router.post('/adduser/', verifyToken, (req, res) => {
 })
 
 
-router.post('/addparty', verifyToken, (req, res) => {
-  const partyName = req.body.partyName
-  const link = uuid.v4()
-  let sql = "insert into party (name, link) values (?, ?)"
-  let inserts = [partyName, link]
-  connection.query(sql, inserts, (error, results, fields) => {
-    if (error) console.log(error)
-    res.status(200).json(inserts)
-  })
 
-})
 /*
 function verifyToken(req, res, next) {
   if(typeof req.cookies.token !== 'undefined') {
