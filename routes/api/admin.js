@@ -60,5 +60,69 @@ router.post('/addquestion/', verifyToken, (req, res) => {
   })
 })
 
+router.get('/deleteparty/:id', verifyToken, (req, res) => {
+  let sql = "select * from party where id = ?"
+  let id = req.params.id
+  let inserts = [id]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) {
+      res.status(500).json(error)
+    } else {
+      let deletesql = "delete from party where id = ?"
+
+      connection.query(deletesql, inserts,  (error, results, fields) => {
+        if (error) {
+          res.status(500).json(error)
+        } else {
+          res.status(200).json("party deleted")
+        }
+      })
+    }
+  })
+})
+
+
+router.get('/deletedistrict/:id', verifyToken, (req, res) => {
+  let sql = "select * from district where id = ?"
+  let id = req.params.id
+  let inserts = [id]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) {
+      res.status(500).json(error)
+    } else {
+      let deletesql = "delete from district where id = ?"
+
+      connection.query(deletesql, inserts,  (error, results, fields) => {
+        if (error) {
+          res.status(500).json(error)
+        } else {
+          res.status(200).json("district deleted")
+        }
+      })
+    }
+  })
+})
+
+router.get('/deletequestion/:id', verifyToken, (req, res) => {
+  let sql = "select * from question where id = ?"
+  let id = req.params.id
+  let inserts = [id]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) {
+      res.status(500).json(error)
+    } else {
+      let deletesql = "delete from question where id = ?"
+
+      connection.query(deletesql, inserts,  (error, results, fields) => {
+        if (error) {
+          res.status(500).json(error)
+        } else {
+          res.status(200).json("question deleted")
+        }
+      })
+    }
+  })
+})
+
 
 module.exports = router
