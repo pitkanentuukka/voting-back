@@ -16,6 +16,11 @@ router.get('/auth/', verifyToken, (req, res) => {
   res.status(200).end()
 })
 
+router.get('/logout/', verifyToken, (req, res) => {
+  res.clearCookie('token')
+  res.status(200).json({'msg': 'logged out'})
+})
+
 router.post('/', cors(), (req, res) => {
 
   const email = req.body.email
