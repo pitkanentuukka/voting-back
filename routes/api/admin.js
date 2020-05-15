@@ -55,7 +55,7 @@ router.post('/addquestion/', verifyToken, (req, res) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json(inserts)
+      res.status(200).json({id: results.insertId, question: inserts[0]})
     }
   })
 })
@@ -124,5 +124,19 @@ router.get('/deletequestion/:id', verifyToken, (req, res) => {
   })
 })
 
+router.post('/editquestion/:id', verifyToken, (req, res) => {
+  let sql = "update question set question = ? where id = ?"
+  let id = req.params.id
+  let question = req.body.question
+  let inserts = [question, id]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) {
+      res.status(500).json(error)
+    } else {
+      res.status(200).end()
+    }
+
+  })
+})
 
 module.exports = router
