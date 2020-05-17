@@ -10,12 +10,18 @@ const cookieParser = require('cookie-parser')
 const secret = 't0ps3cr3tf0rd3v3nv'
 const verifyToken = require('./../../verifyToken')
 
-/*
+/**
 * CRUD functions for parties, districts, and questions
 * or maybe just Create, Read and Delete
 * Not sure if update is necessary as of now
 * and read operations can also exist elsewhere
- **/
+*/
+
+/**
+* takes in json in format {partyName: partyname },
+* returns status 200, and {id: id, partyName: partyName} on success,
+* 500 and error message on error
+*/
 
 router.post('/addparty/', verifyToken, (req, res) => {
   const partyName = req.body.partyName
@@ -32,6 +38,12 @@ router.post('/addparty/', verifyToken, (req, res) => {
 
 })
 
+/**
+* add a voting district, takes {district: district}
+* returns 200 & {id: id, district: district} on success
+* 500 & error message on failure
+*/
+
 router.post('/adddistrict/', verifyToken, (req, res) => {
   const district = req.body.district
 
@@ -44,8 +56,14 @@ router.post('/adddistrict/', verifyToken, (req, res) => {
       res.status(200).json(inserts)
     }
   })
-
 })
+
+/**
+* add question, takes {question: question}
+* returns 200 & {id: id, question: question} on success
+* 500 & error message on failure
+*/
+
 router.post('/addquestion/', verifyToken, (req, res) => {
   const question = req.body.question
 
@@ -60,27 +78,38 @@ router.post('/addquestion/', verifyToken, (req, res) => {
   })
 })
 
+/**
+* deletes a party by id, returns 200 on success, 400 if party not found,
+* 500 on other errors
+*/
 router.get('/deleteparty/:id', verifyToken, (req, res) => {
-  let sql = "select * from party where id = ?"
+  let sql = 'select * from party where id = ?'
   let id = req.params.id
   let inserts = [id]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      let deletesql = "delete from party where id = ?"
-
-      connection.query(deletesql, inserts,  (error, results, fields) => {
-        if (error) {
-          res.status(500).json(error)
-        } else {
-          res.status(200).json("party deleted")
-        }
-      })
+      if (results[0] !== undefined) {
+        let deletesql = 'delete from party where id = ?'
+        connection.query(deletesql, inserts,  (error, results, fields) => {
+          if (error) {
+            res.status(500).json(error)
+          } else {
+            res.status(200).json('party deleted')
+          }
+        })
+      } else {
+        res.status(400).json('party not found')
+      }
     }
   })
 })
 
+/**
+* deletes a district by id, returns 200 on success, 400 if district not found,
+* 500 on other errors
+*/
 
 router.get('/deletedistrict/:id', verifyToken, (req, res) => {
   let sql = "select * from district where id = ?"
@@ -90,18 +119,26 @@ router.get('/deletedistrict/:id', verifyToken, (req, res) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      let deletesql = "delete from district where id = ?"
-
-      connection.query(deletesql, inserts,  (error, results, fields) => {
-        if (error) {
-          res.status(500).json(error)
-        } else {
-          res.status(200).json("district deleted")
-        }
-      })
+      if (results[0] !== undefined) {
+        let deletesql = "delete from district where id = ?"
+        connection.query(deletesql, inserts,  (error, results, fields) => {
+          if (error) {
+            res.status(500).json(error)
+          } else {
+            res.status(200).json("district deleted")
+          }
+        })
+      } else {
+        res.status(400).json('district not found')
+      }
     }
   })
 })
+
+/**
+* deletes a question by id, returns 200 on success, 400 if question not found,
+* 500 on other errors
+*/
 
 router.get('/deletequestion/:id', verifyToken, (req, res) => {
   let sql = "select * from question where id = ?"
@@ -111,18 +148,28 @@ router.get('/deletequestion/:id', verifyToken, (req, res) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      let deletesql = "delete from question where id = ?"
+      if (results[0] !== undefined) {
+        let deletesql = "delete from question where id = ?"
 
-      connection.query(deletesql, inserts,  (error, results, fields) => {
-        if (error) {
-          res.status(500).json(error)
-        } else {
-          res.status(200).json("question deleted")
-        }
-      })
+        connection.query(deletesql, inserts,  (error, results, fields) => {
+          if (error) {
+            res.status(500).json(error)
+          } else {
+            res.status(200).json("question deleted")
+          }
+        })
+      } else {
+        res.status(400).json('question not found')
+      }
     }
   })
 })
+
+/**
+* edits a question. Takes question id as a parameter, new question
+* as POST {question : question} JSON, returns 200 on success and
+* 500 on failure
+*/
 
 router.post('/editquestion/:id', verifyToken, (req, res) => {
   let sql = "update question set question = ? where id = ?"

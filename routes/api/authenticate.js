@@ -12,17 +12,35 @@ const cookieParser = require('cookie-parser')
 const secret = 't0ps3cr3tf0rd3v3nv'
 const verifyToken = require('./../../verifyToken')
 
+
+/**
+* This simply returns 200 if user is logged in. If not,
+* the verifyToken middleware returns 403. Since we're
+* going to use httpOnly cookies in production the client
+* cant' know if they're logged in without asking the server.
+*/
 router.get('/auth/', verifyToken, (req, res) => {
   res.status(200).end()
 })
 
+/**
+* logout. Simply deletes the authentication cookie.
+* Since we're going to implement httpOnly cookies
+* in production this cannot be done by the client.
+*/
 router.get('/logout/', verifyToken, (req, res) => {
   res.clearCookie('token')
   res.status(200).json({'msg': 'logged out'})
 })
 
-router.post('/', cors(), (req, res) => {
+/**
+* login. email and password are given as json in post request as
+* {email: email, password: password}. If either of them are missing
+* this returns a 400: bad request. If they don't match, 403. If they
+* match, 200.
+*/
 
+router.post('/', cors(), (req, res) => {
   const email = req.body.email
   const password = req.body.password
   if (email && password) {
@@ -52,6 +70,13 @@ router.post('/', cors(), (req, res) => {
     res.status(400).json({"msg": "missing email or password"})
   }
 })
+
+/**
+* this adds a new user. email and password are POSTed as json,
+* the password is hashed with bcrypt and stored in db. This was made
+* for development purposes and needs to be rewritten to return error codes
+* before it's suitable for production.
+*/
 router.post('/adduser/', verifyToken, (req, res) => {
   const {email, password} = req.body
   bcrypt.hash(password, 10, (err, hash) => {
@@ -64,26 +89,5 @@ router.post('/adduser/', verifyToken, (req, res) => {
     })
   })
 })
-
-
-
-/*
-function verifyToken(req, res, next) {
-  if(typeof req.cookies.token !== 'undefined') {
-
-    jwt.verify(req.cookies.token, secret, (err, authData) => {
-      console.log("err")
-      if(err) {
-        res.sendStatus(403)
-      } else {
-        next()
-      }
-    })
-  } else {
-    res.sendStatus(403)
-  }
-}
-*/
-
 
 module.exports = router
