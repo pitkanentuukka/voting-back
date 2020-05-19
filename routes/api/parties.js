@@ -10,7 +10,6 @@ router.get('/', cors(), (req, res) => {
   let sql = "select * from party";
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
-    //res.header("Access-Control-Allow-Origin", "*")
     res.json(results)
   });
 

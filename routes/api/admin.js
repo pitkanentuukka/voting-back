@@ -24,15 +24,15 @@ const verifyToken = require('./../../verifyToken')
 */
 
 router.post('/addparty/', verifyToken, (req, res) => {
-  const partyName = req.body.partyName
+  const partyName = req.body.party
   const link = uuid.v4()
-  let sql = "insert into party (name, link) values (?, ?)"
+  let sql = "insert into party (party, link) values (?, ?)"
   let inserts = [partyName, link]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json(inserts)
+      res.status(200).json({id: results.insertId, party: inserts[0]})
     }
   })
 
@@ -53,7 +53,7 @@ router.post('/adddistrict/', verifyToken, (req, res) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json(inserts)
+      res.status(200).json({id: results.insertId, district: inserts[0]})
     }
   })
 })
@@ -176,6 +176,36 @@ router.post('/editquestion/:id', verifyToken, (req, res) => {
   let id = req.params.id
   let question = req.body.question
   let inserts = [question, id]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) {
+      res.status(500).json(error)
+    } else {
+      res.status(200).end()
+    }
+
+  })
+})
+
+router.post('/editdistrict/:id', verifyToken, (req, res) => {
+  let sql = "update district set district = ? where id = ?"
+  let id = req.params.id
+  let district = req.body.district
+  let inserts = [district, id]
+  connection.query(sql, inserts, (error, results, fields) => {
+    if (error) {
+      res.status(500).json(error)
+    } else {
+      res.status(200).end()
+    }
+
+  })
+})
+
+router.post('/editparty/:id', verifyToken, (req, res) => {
+  let sql = "update party set party = ? where id = ?"
+  let id = req.params.id
+  let party = req.body.party
+  let inserts = [party, id]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)

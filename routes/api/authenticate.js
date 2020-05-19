@@ -16,8 +16,8 @@ const verifyToken = require('./../../verifyToken')
 /**
 * This simply returns 200 if user is logged in. If not,
 * the verifyToken middleware returns 403. Since we're
-* going to use httpOnly cookies in production the client
-* cant' know if they're logged in without asking the server.
+* using httpOnly cookies in production the client cant'
+* know if they're logged in without asking the server.
 */
 router.get('/auth/', verifyToken, (req, res) => {
   res.status(200).end()
@@ -25,8 +25,7 @@ router.get('/auth/', verifyToken, (req, res) => {
 
 /**
 * logout. Simply deletes the authentication cookie.
-* Since we're going to implement httpOnly cookies
-* in production this cannot be done by the client.
+* Since we're using httpOnly cookies the client can't do this.
 */
 router.get('/logout/', verifyToken, (req, res) => {
   res.clearCookie('token')
