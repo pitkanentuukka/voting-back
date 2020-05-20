@@ -32,7 +32,7 @@ router.post('/addparty/', verifyToken, (req, res) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json({id: results.insertId, party: inserts[0]})
+      res.status(200).json({id: results.insertId, party: inserts[0], link: inserts[1]})
     }
   })
 
