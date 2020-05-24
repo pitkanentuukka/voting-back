@@ -1,15 +1,20 @@
 const mysql = require('mysql')
+const dotenv = require('dotenv')
+
 // FIXME! we're using a single mySQL connection for the whole app
 // it works okay when in dev, but needs to be reworked to connection pool
 // before moving to production
 
 // also, all queries need to be reworked to use promises
 // this might require using mysql-promise module
-  const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'ci_voting',
-    password: 'FjGhAMDLbE6tUcSq',
-    database: 'ci_voting'
+
+dotenv.config()
+  const pool = mysql.createConnection({
+
+    host: `${process.env.MYSQL_HOST}`,
+    user: `${process.env.MYSQL_USER}`,
+    password: `${process.env.MYSQL_PASSWORD}`,
+    database: `${process.env.MYSQL_DATABASE}`,
   })
   connection.connect((err)=> {
     if (err) {

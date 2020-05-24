@@ -9,9 +9,12 @@ const {check, validationResult} = require('express-validator')
 const uuid = require('uuid')
 const cookieParser = require('cookie-parser')
 
-const secret = 't0ps3cr3tf0rd3v3nv'
-const verifyToken = require('./../../verifyToken')
 
+const verifyToken = require('./../../verifyToken')
+const dotenv = require('dotenv')
+
+
+dotenv.config()
 
 /**
 * This simply returns 200 if user is logged in. If not,
@@ -53,7 +56,7 @@ router.post('/', cors(), (req, res) => {
         bcrypt.compare(password, results[0].password, (bcerr, bcres) => {
           if (bcres) {
             const payload = { email };
-            const token = jwt.sign(payload, secret, {
+            const token = jwt.sign(payload, process.env.JWT_KEY, {
               expiresIn: '1d'
             })
             res.status(200).cookie('token', token, { httpOnly: true })

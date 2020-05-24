@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
-const secret = 't0ps3cr3tf0rd3v3nv'
+const dotenv = require('dotenv')
+
+dotenv.config()
+
+
 
 /**
 * middleware for validating authentication cookie
@@ -10,7 +14,7 @@ const secret = 't0ps3cr3tf0rd3v3nv'
 
 module.exports = function verifyToken(req, res, next) {
   if(typeof req.cookies.token !== 'undefined') {
-    jwt.verify(req.cookies.token, secret, (err, authData) => {
+    jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, authData) => {
       if(err) {
         res.sendStatus(403)
       } else {
