@@ -9,20 +9,12 @@ const dotenv = require('dotenv')
 // this might require using mysql-promise module
 
 dotenv.config()
-  const pool = mysql.createConnection({
+const pool = mysql.createPool({
 
-    host: `${process.env.MYSQL_HOST}`,
-    user: `${process.env.MYSQL_USER}`,
-    password: `${process.env.MYSQL_PASSWORD}`,
-    database: `${process.env.MYSQL_DATABASE}`,
-  })
-  connection.connect((err)=> {
-    if (err) {
-      console.error('error connecting: ' + err.stack)
-      return;
-    }
-    console.log("connected  as id " + connection.threadId)
+  host: `${process.env.MYSQL_HOST}`,
+  user: `${process.env.MYSQL_USER}`,
+  password: `${process.env.MYSQL_PASSWORD}`,
+  database: `${process.env.MYSQL_DATABASE}`,
+})
 
-  })
-
-module.exports = connection
+module.exports = pool
