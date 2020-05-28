@@ -8,13 +8,13 @@ const uuid = require('uuid')
 const cookieParser = require('cookie-parser')
 
 const secret = 't0ps3cr3tf0rd3v3nv'
-const verifyToken = require('./../../verifyToken')
+//const checkAdmin = require('./../../verifyToken')
+const checkAdmin = require('./../../checkAdmin')
 
 /**
 * CRUD functions for parties, districts, and questions
-* or maybe just Create, Read and Delete
-* Not sure if update is necessary as of now
-* and read operations can also exist elsewhere
+* Actually just create, update, delete
+* read is in item-specific files
 */
 
 /**
@@ -23,7 +23,7 @@ const verifyToken = require('./../../verifyToken')
 * 500 and error message on error
 */
 
-router.post('/addparty/', verifyToken, (req, res) => {
+router.post('/addparty/', checkAdmin, (req, res) => {
   const partyName = req.body.party
   const link = uuid.v4()
   let sql = "insert into party (party, link) values (?, ?)"
@@ -44,7 +44,7 @@ router.post('/addparty/', verifyToken, (req, res) => {
 * 500 & error message on failure
 */
 
-router.post('/adddistrict/', verifyToken, (req, res) => {
+router.post('/adddistrict/', checkAdmin, (req, res) => {
   const district = req.body.district
 
   let sql = "insert into district (district) values (?)"
@@ -64,7 +64,7 @@ router.post('/adddistrict/', verifyToken, (req, res) => {
 * 500 & error message on failure
 */
 
-router.post('/addquestion/', verifyToken, (req, res) => {
+router.post('/addquestion/', checkAdmin, (req, res) => {
   const question = req.body.question
 
   let sql = "insert into question (question) values (?)"
@@ -82,7 +82,7 @@ router.post('/addquestion/', verifyToken, (req, res) => {
 * deletes a party by id, returns 200 on success, 400 if party not found,
 * 500 on other errors
 */
-router.get('/deleteparty/:id', verifyToken, (req, res) => {
+router.get('/deleteparty/:id', checkAdmin, (req, res) => {
   let sql = 'select * from party where id = ?'
   let id = req.params.id
   let inserts = [id]
@@ -111,7 +111,7 @@ router.get('/deleteparty/:id', verifyToken, (req, res) => {
 * 500 on other errors
 */
 
-router.get('/deletedistrict/:id', verifyToken, (req, res) => {
+router.get('/deletedistrict/:id', checkAdmin, (req, res) => {
   let sql = "select * from district where id = ?"
   let id = req.params.id
   let inserts = [id]
@@ -140,7 +140,7 @@ router.get('/deletedistrict/:id', verifyToken, (req, res) => {
 * 500 on other errors
 */
 
-router.get('/deletequestion/:id', verifyToken, (req, res) => {
+router.get('/deletequestion/:id', checkAdmin, (req, res) => {
   let sql = "select * from question where id = ?"
   let id = req.params.id
   let inserts = [id]
@@ -171,7 +171,7 @@ router.get('/deletequestion/:id', verifyToken, (req, res) => {
 * 500 on failure
 */
 
-router.post('/editquestion/:id', verifyToken, (req, res) => {
+router.post('/editquestion/:id', checkAdmin, (req, res) => {
   let sql = "update question set question = ? where id = ?"
   let id = req.params.id
   let question = req.body.question
@@ -186,7 +186,7 @@ router.post('/editquestion/:id', verifyToken, (req, res) => {
   })
 })
 
-router.post('/editdistrict/:id', verifyToken, (req, res) => {
+router.post('/editdistrict/:id', checkAdmin, (req, res) => {
   let sql = "update district set district = ? where id = ?"
   let id = req.params.id
   let district = req.body.district
@@ -201,7 +201,7 @@ router.post('/editdistrict/:id', verifyToken, (req, res) => {
   })
 })
 
-router.post('/editparty/:id', verifyToken, (req, res) => {
+router.post('/editparty/:id', checkAdmin, (req, res) => {
   let sql = "update party set party = ? where id = ?"
   let id = req.params.id
   let party = req.body.party

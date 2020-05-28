@@ -10,7 +10,7 @@ const uuid = require('uuid')
 const cookieParser = require('cookie-parser')
 
 
-const verifyToken = require('./../../verifyToken')
+const checkAdmin = require('./../../checkAdmin')
 const dotenv = require('dotenv')
 
 
@@ -18,11 +18,11 @@ dotenv.config()
 
 /**
 * This simply returns 200 if user is logged in. If not,
-* the verifyToken middleware returns 403. Since we're
+* the checkAdmin middleware returns 403. Since we're
 * using httpOnly cookies in production the client cant'
 * know if they're logged in without asking the server.
 */
-router.get('/auth/', verifyToken, (req, res) => {
+router.get('/auth/', checkAdmin, (req, res) => {
   res.status(200).end()
 })
 
@@ -30,7 +30,7 @@ router.get('/auth/', verifyToken, (req, res) => {
 * logout. Simply deletes the authentication cookie.
 * Since we're using httpOnly cookies the client can't do this.
 */
-router.get('/logout/', verifyToken, (req, res) => {
+router.get('/logout/', checkAdmin, (req, res) => {
   res.clearCookie('token')
   res.status(200).json({'msg': 'logged out'})
 })
@@ -79,7 +79,7 @@ router.post('/', cors(), (req, res) => {
 * for development purposes and needs to be rewritten to return error codes
 * before it's suitable for production.
 */
-router.post('/adduser/', verifyToken, (req, res) => {
+router.post('/adduser/', checkAdmin, (req, res) => {
   const {email, password} = req.body
   bcrypt.hash(password, 10, (err, hash) => {
     let sql = "insert into users (email, password, status) values (?, ?, 1)"
