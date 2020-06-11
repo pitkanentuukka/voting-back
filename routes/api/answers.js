@@ -4,8 +4,9 @@ const cors = require('cors')
 const connection = require ('./sql.js')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
-
 const verifyToken = require('./../../verifyToken')
+
+// adds the answers submitted by candidate
 
 router.post('/addanswers', cors(), verifyToken, (req, res) => {
   const answers = req.body.answers
@@ -13,6 +14,7 @@ router.post('/addanswers', cors(), verifyToken, (req, res) => {
   const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
   const candidateid = decodedToken.candidateid
 
+  // create new 2d array with the data to insert
   const inserts = questionids.map(function (item) {
     return [item, candidateid, answers[item]['value'], answers[item]['text']]
   })

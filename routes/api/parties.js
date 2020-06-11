@@ -4,7 +4,6 @@ const cors = require('cors')
 const connection = require ('./sql.js')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
-const dotenv = require('dotenv')
 
 
 const verifyToken = require('./../../verifyToken')
@@ -22,10 +21,10 @@ router.get('/', cors(), (req, res) => {
 
 // validate party link
 router.get('/validate', cors(), (req, res) => {
-  let partyid = parseInt(req.query.id)
-  let link = req.query.link
-  let sql = "select * from party where id = ? and link = ?"
-  let inserts = [partyid, link]
+  const partyid = parseInt(req.query.id)
+  const link = req.query.link
+  const sql = "select * from party where id = ? and link = ?"
+  const inserts = [partyid, link]
   if (partyid && link) {
     connection.query(sql, inserts, function (error, results, fields) {
       if (error) {
@@ -33,6 +32,7 @@ router.get('/validate', cors(), (req, res) => {
       }
 
       if (results[0]) {
+        console.log(results);
         const payload = { partyid };
         const token = jwt.sign(payload, process.env.JWT_KEY, {
           expiresIn: '1d'
@@ -51,16 +51,15 @@ router.get('/validate', cors(), (req, res) => {
 })
 
 router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
-  let name = req.body.name
-  let number = req.body.number
-  let districtid = req.body.district
+  const name = req.body.name
+  const number = req.body.number
+  const districtid = req.body.district
   if (name && number && districtid) {
-    let decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
-    let partyid = decodedToken.partyid
+    const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
+    const partyid = decodedToken.partyid
 
-    let inserts = [partyid, districtid, name, number]
-    console.log(inserts);
-    let sql = "insert into candidate (party_id, district_id, name, number) values (?, ?, ?, ?)"
+    const inserts = [partyid, districtid, name, number]
+    const sql = "insert into candidate (party_id, district_id, name, number) values (?, ?, ?, ?)"
     connection.query(sql, inserts, (error, results, fields) => {
       if (error) {
         res.status(500).json(error)
@@ -75,8 +74,8 @@ router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
       }
     })
   }
-
 })
+
 
 
 module.exports = router;
