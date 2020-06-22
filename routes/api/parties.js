@@ -11,13 +11,14 @@ const verifyToken = require('./../../verifyToken')
 
 // get all parties:
 router.get('/', cors(), (req, res) => {
-  let sql = "select * from party";
+  let sql = "select id, party from party";
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     res.json(results)
   });
 
 })
+
 
 // validate party link
 router.get('/validate', cors(), (req, res) => {
@@ -68,7 +69,6 @@ router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
         const token = jwt.sign(payload, process.env.JWT_KEY, {
           expiresIn: '1d'
         })
-        //res.status(200).cookie('token', token, { httpOnly: true })
         res.status(200).cookie('token', token, { httpOnly: true})
           .json({candidateid: results.insertId})
       }

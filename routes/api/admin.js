@@ -23,6 +23,17 @@ const checkAdmin = require('./../../checkAdmin')
 * 500 and error message on error
 */
 
+
+router.get('/partiesandlinks', cors(), checkAdmin, (req, res) => {
+  let sql = "select * from party";
+  connection.query(sql, function (error, results, fields) {
+    if (error) throw error;
+    res.json(results)
+  });
+
+})
+
+
 router.post('/addparty/', checkAdmin, (req, res) => {
   const partyName = req.body.party
   const link = uuid.v4()
