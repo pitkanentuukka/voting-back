@@ -24,5 +24,7 @@ module.exports = function checkAdmin(req, res, next) {
         }
       }
    })
+ } else {
+   res.sendStatus(403)
  }
 }
