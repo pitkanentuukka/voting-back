@@ -29,9 +29,12 @@ router.post('/addanswers', cors(), verifyToken, (req, res) => {
   })
 })
 
-
-
-
-
+router.get('/', cors(), (req, res) => {
+  sql = "select * from answer"
+  connection.query(sql, function (error, results, fields) {
+    if (error) throw error;
+    res.json(results)
+  });
+})
 
 module.exports = router;
