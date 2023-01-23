@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const cors = require('cors')
-const connection = require ('./sql.js')
+const connection = require('./sql.js')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 
@@ -39,14 +39,14 @@ router.get('/validate', cors(), (req, res) => {
           expiresIn: '1d'
         })
         //res.status(200).cookie('token', token, { httpOnly: true })
-        res.status(200).cookie('token', token, { httpOnly: true}).json(results)
+        res.status(200).cookie('token', token, { httpOnly: true }).json(results)
         res.end()
       } else {
-        res.status(403).json({'msg': 'invalid link'})
+        res.status(403).json({ 'msg': 'invalid link' })
       }
     })
   } else {
-    res.status(400).json({'msg': 'bad request'})
+    res.status(400).json({ 'msg': 'bad request' })
   }
 
 })
@@ -54,13 +54,14 @@ router.get('/validate', cors(), (req, res) => {
 router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
   const name = req.body.name
   const number = req.body.number
+  const email = req.body.email
   const districtid = req.body.district
   if (name && number && districtid) {
     const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
     const partyid = decodedToken.partyid
 
-    const inserts = [partyid, districtid, name, number]
-    const sql = "insert into candidate (party_id, district_id, name, number) values (?, ?, ?, ?)"
+    const inserts = [partyid, districtid, name, number, email]
+    const sql = "insert into candidate (party_id, district_id, name, number, email) values (?, ?, ?, ?, ? )"
     connection.query(sql, inserts, (error, results, fields) => {
       if (error) {
         res.status(500).json(error)
@@ -69,8 +70,8 @@ router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
         const token = jwt.sign(payload, process.env.JWT_KEY, {
           expiresIn: '1d'
         })
-        res.status(200).cookie('token', token, { httpOnly: true})
-          .json({candidateid: results.insertId})
+        res.status(200).cookie('token', token, { httpOnly: true })
+          .json({ candidateid: results.insertId })
       }
     })
   }
