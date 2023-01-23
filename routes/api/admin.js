@@ -1,9 +1,9 @@
-const connection = require ('./sql.js')
+const connection = require('./sql.js')
 const express = require('express')
 const router = express.Router()
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const {check, validationResult} = require('express-validator')
+const { check, validationResult } = require('express-validator')
 const uuid = require('uuid')
 const cookieParser = require('cookie-parser')
 
@@ -23,9 +23,11 @@ const checkAdmin = require('./../../checkAdmin')
 * 500 and error message on error
 */
 
+// TODO: change delete requests to actual delete requests
+
 
 router.get('/partiesandlinks', cors(), checkAdmin, (req, res) => {
-  let sql = "select * from party";
+  const sql = "select * from party";
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     res.json(results)
@@ -37,13 +39,13 @@ router.get('/partiesandlinks', cors(), checkAdmin, (req, res) => {
 router.post('/addparty/', checkAdmin, (req, res) => {
   const partyName = req.body.party
   const link = uuid.v4()
-  let sql = "insert into party (party, link) values (?, ?)"
-  let inserts = [partyName, link]
+  const sql = "insert into party (party, link) values (?, ?)"
+  const inserts = [partyName, link]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json({id: results.insertId, party: inserts[0], link: inserts[1]})
+      res.status(200).json({ id: results.insertId, party: inserts[0], link: inserts[1] })
     }
   })
 
@@ -58,13 +60,13 @@ router.post('/addparty/', checkAdmin, (req, res) => {
 router.post('/adddistrict/', checkAdmin, (req, res) => {
   const district = req.body.district
 
-  let sql = "insert into district (district) values (?)"
-  let inserts = [district]
+  const sql = "insert into district (district) values (?)"
+  const inserts = [district]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json({id: results.insertId, district: inserts[0]})
+      res.status(200).json({ id: results.insertId, district: inserts[0] })
     }
   })
 })
@@ -78,13 +80,13 @@ router.post('/adddistrict/', checkAdmin, (req, res) => {
 router.post('/addquestion/', checkAdmin, (req, res) => {
   const question = req.body.question
 
-  let sql = "insert into question (question) values (?)"
-  let inserts = [question]
+  const sql = "insert into question (question) values (?)"
+  const inserts = [question]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
-      res.status(200).json({id: results.insertId, question: inserts[0]})
+      res.status(200).json({ id: results.insertId, question: inserts[0] })
     }
   })
 })
@@ -94,16 +96,16 @@ router.post('/addquestion/', checkAdmin, (req, res) => {
 * 500 on other errors
 */
 router.get('/deleteparty/:id', checkAdmin, (req, res) => {
-  let sql = 'select * from party where id = ?'
-  let id = req.params.id
-  let inserts = [id]
+  const sql = 'select * from party where id = ?'
+  const id = req.params.id
+  const inserts = [id]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
       if (results[0] !== undefined) {
         let deletesql = 'delete from party where id = ?'
-        connection.query(deletesql, inserts,  (error, results, fields) => {
+        connection.query(deletesql, inserts, (error, results, fields) => {
           if (error) {
             res.status(500).json(error)
           } else {
@@ -123,16 +125,16 @@ router.get('/deleteparty/:id', checkAdmin, (req, res) => {
 */
 
 router.get('/deletedistrict/:id', checkAdmin, (req, res) => {
-  let sql = "select * from district where id = ?"
-  let id = req.params.id
-  let inserts = [id]
+  const sql = "select * from district where id = ?"
+  const id = req.params.id
+  const inserts = [id]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
     } else {
       if (results[0] !== undefined) {
         let deletesql = "delete from district where id = ?"
-        connection.query(deletesql, inserts,  (error, results, fields) => {
+        connection.query(deletesql, inserts, (error, results, fields) => {
           if (error) {
             res.status(500).json(error)
           } else {
@@ -152,9 +154,9 @@ router.get('/deletedistrict/:id', checkAdmin, (req, res) => {
 */
 
 router.get('/deletequestion/:id', checkAdmin, (req, res) => {
-  let sql = "select * from question where id = ?"
-  let id = req.params.id
-  let inserts = [id]
+  const id = req.params.id
+  const inserts = [id]
+  const sql = "select * from question where id = ?"
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
@@ -162,7 +164,7 @@ router.get('/deletequestion/:id', checkAdmin, (req, res) => {
       if (results[0] !== undefined) {
         let deletesql = "delete from question where id = ?"
 
-        connection.query(deletesql, inserts,  (error, results, fields) => {
+        connection.query(deletesql, inserts, (error, results, fields) => {
           if (error) {
             res.status(500).json(error)
           } else {
@@ -183,10 +185,10 @@ router.get('/deletequestion/:id', checkAdmin, (req, res) => {
 */
 
 router.post('/editquestion/:id', checkAdmin, (req, res) => {
-  let sql = "update question set question = ? where id = ?"
-  let id = req.params.id
-  let question = req.body.question
-  let inserts = [question, id]
+  const sql = "update question set question = ? where id = ?"
+  const id = req.params.id
+  const question = req.body.question
+  const inserts = [question, id]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
@@ -213,10 +215,10 @@ router.post('/editdistrict/:id', checkAdmin, (req, res) => {
 })
 
 router.post('/editparty/:id', checkAdmin, (req, res) => {
-  let sql = "update party set party = ? where id = ?"
-  let id = req.params.id
-  let party = req.body.party
-  let inserts = [party, id]
+  const sql = "update party set party = ? where id = ?"
+  const id = req.params.id
+  const party = req.body.party
+  const inserts = [party, id]
   connection.query(sql, inserts, (error, results, fields) => {
     if (error) {
       res.status(500).json(error)
