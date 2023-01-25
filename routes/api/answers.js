@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const cors = require('cors')
-const connection = require ('./sql.js')
+const connection = require('./sql.js')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const verifyToken = require('./../../verifyToken')
@@ -14,27 +14,19 @@ router.post('/addanswers', cors(), verifyToken, (req, res) => {
   const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
   const candidateid = decodedToken.candidateid
 
-  // create new 2d array with the data to insert
-  const inserts = questionids.map(function (item) {
-    return [item, candidateid, answers[item]['value'], answers[item]['text']]
-  })
-  const sql = "insert into answer (question_id, candidate_id, answer, text) values ?"
+  for (const key in answers) {
+    const questionId = key
+    const { text, value } = answers[key]
+    connection.query('INSERT INTO answer (answer, text, question_id, candidate_id) VALUES (?, ?, ?, ?)',
+      [value, text, questionId, candidateid], (error, results) => {
+        if (error) {
+          console.log(error);
+        }
+      })
 
-  connection.query(sql, [inserts], (error, results, fields) => {
-    if (error) {
-      res.status(500).json(error)
-    } else {
-      res.status(200).json({"msg": "thank you for your contribution"})
-    }
-  })
+  }
+  res.status(200).json({ "msg": 'Answers saved successfully!' }).end();
 })
 
-router.get('/', cors(), (req, res) => {
-  sql = "select * from answer"
-  connection.query(sql, function (error, results, fields) {
-    if (error) throw error;
-    res.json(results)
-  });
-})
 
 module.exports = router;
