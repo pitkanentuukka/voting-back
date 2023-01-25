@@ -60,7 +60,8 @@ router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
     const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
     const partyid = decodedToken.partyid
 
-    const inserts = [partyid, districtid, name, number, email]
+    const inserts = [partyid, districtid, name, number, email];
+
     const sql = "insert into candidate (party_id, district_id, name, number, email) values (?, ?, ?, ?, ? )"
     connection.query(sql, inserts, (error, results, fields) => {
       if (error) {
