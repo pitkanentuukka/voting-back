@@ -95,7 +95,7 @@ router.post('/addquestion/', checkAdmin, (req, res) => {
 * deletes a party by id, returns 200 on success, 400 if party not found,
 * 500 on other errors
 */
-router.get('/deleteparty/:id', checkAdmin, (req, res) => {
+router.delete('/party/:id', checkAdmin, (req, res) => {
   const sql = 'select * from party where id = ?'
   const id = req.params.id
   const inserts = [id]
@@ -124,7 +124,7 @@ router.get('/deleteparty/:id', checkAdmin, (req, res) => {
 * 500 on other errors
 */
 
-router.get('/deletedistrict/:id', checkAdmin, (req, res) => {
+router.delete('/district/:id', checkAdmin, (req, res) => {
   const sql = "select * from district where id = ?"
   const id = req.params.id
   const inserts = [id]
@@ -153,7 +153,7 @@ router.get('/deletedistrict/:id', checkAdmin, (req, res) => {
 * 500 on other errors
 */
 
-router.get('/deletequestion/:id', checkAdmin, (req, res) => {
+router.delete('/question/:id', checkAdmin, (req, res) => {
   const id = req.params.id
   const inserts = [id]
   const sql = "select * from question where id = ?"
