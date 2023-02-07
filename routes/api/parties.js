@@ -33,7 +33,7 @@ router.get('/validate', cors(), (req, res) => {
       }
 
       if (results[0]) {
-        console.log(results);
+
         const payload = { partyid };
         const token = jwt.sign(payload, process.env.JWT_KEY, {
           expiresIn: '1d'
@@ -52,17 +52,28 @@ router.get('/validate', cors(), (req, res) => {
 })
 
 router.post('/addcandidate/', cors(), verifyToken, (req, res) => {
-  const name = req.body.name
-  const number = req.body.number
-  const email = req.body.email
-  const districtid = req.body.district
+
+  const name = req.body.name;
+  const number = req.body.number;
+  const email = req.body.email;
+  const districtid = req.body.district;
+  const facebook = req.body.facebook;
+  const twitter = req.body.twitter;
+  const website = req.body.website;
+  const linkedin = req.body.linkedin;
+  const tiktok = req.body.tiktok;
+  const instagram = req.body.instagram;
+
+
   if (name && number && districtid) {
     const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_KEY)
     const partyid = decodedToken.partyid
 
-    const inserts = [partyid, districtid, name, number, email];
+    const inserts = [partyid, districtid, name, number, email, facebook, twitter, website, linkedin, tiktok, instagram];
 
-    const sql = "insert into candidate (party_id, district_id, name, number, email) values (?, ?, ?, ?, ? )"
+    const sql = "insert into candidate (party_id, district_id, name, number, email, facebook, twitter, website, linkedin, tiktok, instagram) \
+    values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
     connection.query(sql, inserts, (error, results, fields) => {
       if (error) {
         res.status(500).json(error)
