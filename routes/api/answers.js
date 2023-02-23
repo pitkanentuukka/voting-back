@@ -28,16 +28,32 @@ router.post('/addanswers', cors(), verifyToken, (req, res) => {
   res.status(200).json({ "msg": 'Answers saved successfully!' }).end();
 })
 
-router.get('/candidatesandanswers', cors(), (req, res) => {
-  const sql = "select * from candidate, answer where answer.candidate_id = candidate.id";
-  connection.query(sql, (error, results) => {
-    if (error) {
-      return res.status(500).json(error).end();
-    }
-    return res.status(200).json(results).end();
-  })
 
-})
+router.get('/candidatesandanswers/:district', cors(), async (req, res) => {
+  const district = req.params.district;
+  const sql = "select * from candidate where district_id = ?";
 
+  const candidates = await new Promise((resolve, reject) => {
+    connection.query(sql, [district], (error, results) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(results);
+    });
+  });
 
+  for (const candidate of candidates) {
+    candidate.answers = await new Promise((resolve, reject) => {
+      const getanswers = "select * from answer where candidate_id = ? ";
+      connection.query(getanswers, [candidate.id], (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      });
+    });
+  }
+
+  return res.status(200).json(candidates).end();
+});
 module.exports = router;
