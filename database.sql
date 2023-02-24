@@ -33,7 +33,7 @@ CREATE TABLE `answer` (
   KEY `answer_FK_1` (`question_id`),
   CONSTRAINT `answer_FK` FOREIGN KEY (`candidate_id`) REFERENCES `candidate` (`id`),
   CONSTRAINT `answer_FK_1` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `candidate` (
   KEY `candidate_FK_1` (`party_id`),
   CONSTRAINT `candidate_FK` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`),
   CONSTRAINT `candidate_FK_1` FOREIGN KEY (`party_id`) REFERENCES `party` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,7 +75,7 @@ CREATE TABLE `district` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `district` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,6 +123,22 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `voter_answers`
+--
+
+DROP TABLE IF EXISTS `voter_answers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `voter_answers` (
+  `voter_id` varchar(100) NOT NULL,
+  `question_id` int(11) NOT NULL,
+  `answer` int(11) NOT NULL,
+  `district_id` int(11) NOT NULL,
+  PRIMARY KEY (`question_id`,`voter_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -133,4 +149,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-24 11:45:31
+-- Dump completed on 2023-02-24 22:12:19

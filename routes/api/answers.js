@@ -5,6 +5,8 @@ const connection = require('./sql.js')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const verifyToken = require('./../../verifyToken')
+const { v4: uuidv4 } = require('uuid');
+
 
 // adds the answers submitted by candidate
 
@@ -56,4 +58,24 @@ router.get('/candidatesandanswers/:district', cors(), async (req, res) => {
 
   return res.status(200).json(candidates).end();
 });
+
+router.post('/addvoteranswers', cors(), async (req, res) => {
+  const uuid = uuidv4();
+  const district_id = req.body.district_id
+  const answers = req.body.answers
+
+  for (const answer of answers) {
+    const { id, value } = answer;
+    connection.query('INSERT INTO voter_answers (answer,  question_id, voter_id, district_id) VALUES (?, ?, ?, ?)',
+      [value, id, uuid, district_id], (error, results) => {
+        if (error) {
+          console.log(error);
+        }
+      })
+
+  }
+  res.status(200).json({ "msg": 'Answers saved successfully!' }).end();
+})
+
+
 module.exports = router;
